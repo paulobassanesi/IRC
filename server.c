@@ -15,7 +15,7 @@
 int server_sockfd = 0, client_sockfd = 0;
 ClientList *root, *now;
 
-void Commands(char str[])
+int Commands(char str[])
 {
     char *nick = "/nick";
     char *create = "/create";
@@ -37,37 +37,47 @@ void Commands(char str[])
     if(comm!=NULL){
         if(strcmp(comm,nick)==0){
             printf("The command is nick!!");
+            return 0;
         }
         if(strcmp(comm,create)==0){
             printf("The command is create!!");
+            return 1;
         }
         if(strcmp(comm,remove)==0){
             printf("The command is remove!!");
+            return 2;
         }
         if(strcmp(comm,list)==0){
             printf("The command is list!!");
+            return 3;
         }
         if(strcmp(comm,join)==0){
             printf("The command is join!!");
+            return 4;
         }
         if(strcmp(comm,part)==0){
             printf("The command is part!!");
+            return 5;
         }
         if(strcmp(comm,names)==0){
             printf("The command is names!!");
+            return 6;
         }
         if(strcmp(comm,kick)==0){
             printf("The command is kick!!");
+            return 7;
         }
         if(strcmp(comm,msg)==0){
             printf("The command is msg!!");
+            return 8;
         }
         if(strcmp(comm,quit)==0){
             printf("The command is quit!!");
+            return 9;
         }
         else
         {
-            printf("WRONG!");
+            return -1;
         }
     }
     
@@ -89,11 +99,67 @@ void catch_ctrl_c_and_exit(int sig) {
 
 void send_to_all_clients(ClientList *np, char tmp_buffer[]) {
     ClientList *tmp = root->link;
+    char* comm;
+    char buffer[201];
+    strcpy(buffer,tmp_buffer);
     while (tmp != NULL) {
         if (np->data != tmp->data) { // all clients except itself.
             printf("Send to sockfd %d: \"%s\" \n", tmp->data, tmp_buffer);
-            Commands(tmp_buffer);
-            send(tmp->data, tmp_buffer, LENGTH_SEND, 0);
+            switch(Commands(tmp_buffer)){
+                case 0: // nick
+                comm = strtok(buffer," ");
+                comm = strtok(NULL," ");
+                printf("New name is: %s\n",comm);
+                break;
+
+                case 1: // create
+
+                break;
+
+                case 2: //remove
+
+                break;
+
+                case 3: //list
+
+                break;
+
+                case 4: //join
+
+                break;
+
+                case 5: //part
+
+                break;
+
+                case 6: //names
+
+                break;
+
+                case 7: //kick
+
+                break;
+
+                case 8: //msg
+                send(tmp->data, tmp_buffer, LENGTH_SEND, 0);
+                break;
+
+                case 9: //quit
+
+                break;
+
+                default:
+                ;
+
+
+            }
+            
+            
+            
+            if(Commands(tmp_buffer)==-1){
+                
+            }
+            
         }
         tmp = tmp->link;
     }
