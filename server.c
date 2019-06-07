@@ -11,6 +11,7 @@
 #include "proto.h"
 #include "server.h"
 
+
 // Global variables
 int server_sockfd = 0, client_sockfd = 0;
 ClientList *root, *now;
@@ -27,6 +28,7 @@ int Commands(char str[])
     char *kick = "/kick";
     char *msg = "/msg";
     char *quit = "/quit";
+    char *help = "/help";
 
     char AllMsg[201];
 
@@ -75,6 +77,10 @@ int Commands(char str[])
             printf("The command is quit!!");
             return 9;
         }
+        if(strcmp(comm,help)==0){
+            printf("The command is help!!");
+            return 10;
+        }
         else
         {
             return -1;
@@ -98,6 +104,21 @@ void catch_ctrl_c_and_exit(int sig) {
 }
 
 void send_to_all_clients(ClientList *np, char tmp_buffer[]) {
+    
+    char HelpText = "/nick - Change the nickname\n"
+                "/create - create a channel\n"
+                "/remove - requeste channel removal\n"
+                "/list - list all channels available\n"
+                "/join - enter in a channel\n"
+                "/part - request remove user from channel\n"
+                "/names - list all the channel users\n"
+                "/kick - kick a user from channel\n"
+                "/msg - send message private\n"
+                "/quit - leaves the chat\n"
+                "/help - show information\n";
+
+
+
     ClientList *tmp = root->link;
     char* comm;
     char buffer[201];
@@ -146,6 +167,10 @@ void send_to_all_clients(ClientList *np, char tmp_buffer[]) {
 
                 case 9: //quit
 
+                break;
+
+                case 10:
+                send(tmp->data,HelpText, LENGTH_SEND, 0);
                 break;
 
                 case -1:
