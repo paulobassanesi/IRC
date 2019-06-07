@@ -141,23 +141,20 @@ void send_to_all_clients(ClientList *np, char tmp_buffer[]) {
                 break;
 
                 case 8: //msg
-                send(tmp->data, tmp_buffer, LENGTH_SEND, 0);
+                send(tmp->data, buffer, LENGTH_SEND, 0);
                 break;
 
                 case 9: //quit
 
                 break;
 
+                case -1:
+                send(tmp->data, buffer, LENGTH_SEND, 0);
+                break;
+
                 default:
-                ;
+                send(tmp->data, buffer, LENGTH_SEND, 0);
 
-
-            }
-            
-            
-            
-            if(Commands(tmp_buffer)==-1){
-                
             }
             
         }
