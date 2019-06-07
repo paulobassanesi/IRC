@@ -28,6 +28,10 @@ void Commands(char str[])
     char *msg = "/msg";
     char *quit = "/quit";
 
+    char AllMsg[201];
+
+    strcpy(AllMsg,str);
+
     char* comm = strtok(str," ");
 
     if(comm!=NULL){
