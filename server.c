@@ -28,22 +28,45 @@ void Commands(char str[])
     char *msg = "/msg";
     char *quit = "/quit";
 
-    char text[200];
+    char* comm = strtok(str," ");
+
+    if(comm!=NULL){
+        if(strcmp(comm,nick)==0){
+            printf("The command is nick!!");
+        }
+        if(strcmp(comm,create)==0){
+            printf("The command is create!!");
+        }
+        if(strcmp(comm,remove)==0){
+            printf("The command is remove!!");
+        }
+        if(strcmp(comm,list)==0){
+            printf("The command is list!!");
+        }
+        if(strcmp(comm,join)==0){
+            printf("The command is join!!");
+        }
+        if(strcmp(comm,part)==0){
+            printf("The command is part!!");
+        }
+        if(strcmp(comm,names)==0){
+            printf("The command is names!!");
+        }
+        if(strcmp(comm,kick)==0){
+            printf("The command is kick!!");
+        }
+        if(strcmp(comm,msg)==0){
+            printf("The command is msg!!");
+        }
+        if(strcmp(comm,quit)==0){
+            printf("The command is quit!!");
+        }
+        else
+        {
+            printf("WRONG!");
+        }
+    }
     
-    strcpy(text,str);
-
-    char* comm = strtok(str,":");
-
-    comm = strtok(NULL,":");
-
-    if(strcmp(comm,nick)==0){
-        printf("The command is nick!!");
-
-    }
-    else
-    {
-        printf("WRONG!");
-    }
     
 }
 
@@ -100,7 +123,7 @@ void client_handler(void *p_client) {
             if (strlen(recv_buffer) == 0) {
                 continue;
             }
-            sprintf(send_buffer, "%s：%s from %s", np->name, recv_buffer, np->ip);
+            sprintf(send_buffer, "%s",recv_buffer);
         } else if (receive == 0 || strcmp(recv_buffer, "exit") == 0) {
             printf("%s(%s)(%d) leaved the chatroom.\n", np->name, np->ip, np->data);
             sprintf(send_buffer, "%s(%s) leaved the chatroom.", np->name, np->ip);
