@@ -15,6 +15,38 @@
 int server_sockfd = 0, client_sockfd = 0;
 ClientList *root, *now;
 
+void Commands(char str[])
+{
+    char *nick = "/nick";
+    char *create = "/create";
+    char *remove = "/remove";
+    char *list = "/list";
+    char *join = "/join";
+    char *part = "/part";
+    char *names = "/names";
+    char *kick = "/kick";
+    char *msg = "/msg";
+    char *quit = "/quit";
+
+    char text[200];
+    
+    strcpy(text,str);
+
+    char* comm = strtok(str,":");
+
+    comm = strtok(NULL,":");
+
+    if(strcmp(comm,nick)==0){
+        printf("The command is nick!!");
+
+    }
+    else
+    {
+        printf("WRONG!");
+    }
+    
+}
+
 void catch_ctrl_c_and_exit(int sig) {
     ClientList *tmp;
     while (root != NULL) {
@@ -33,6 +65,7 @@ void send_to_all_clients(ClientList *np, char tmp_buffer[]) {
     while (tmp != NULL) {
         if (np->data != tmp->data) { // all clients except itself.
             printf("Send to sockfd %d: \"%s\" \n", tmp->data, tmp_buffer);
+            Commands(tmp_buffer);
             send(tmp->data, tmp_buffer, LENGTH_SEND, 0);
         }
         tmp = tmp->link;
@@ -52,8 +85,8 @@ void client_handler(void *p_client) {
         leave_flag = 1;
     } else {
         strncpy(np->name, nickname, LENGTH_NAME);
-        printf("%s(%s)(%d) join the chatroom.\n", np->name, np->ip, np->data);
-        sprintf(send_buffer, "%s(%s) join the chatroom.", np->name, np->ip);
+        printf("%s(%s)(%d) joined the chatroom.\n", np->name, np->ip, np->data);
+        sprintf(send_buffer, "%s(%s) joined the chatroom.", np->name, np->ip);
         send_to_all_clients(np, send_buffer);
     }
 
@@ -69,8 +102,8 @@ void client_handler(void *p_client) {
             }
             sprintf(send_buffer, "%s：%s from %s", np->name, recv_buffer, np->ip);
         } else if (receive == 0 || strcmp(recv_buffer, "exit") == 0) {
-            printf("%s(%s)(%d) leave the chatroom.\n", np->name, np->ip, np->data);
-            sprintf(send_buffer, "%s(%s) leave the chatroom.", np->name, np->ip);
+            printf("%s(%s)(%d) leaved the chatroom.\n", np->name, np->ip, np->data);
+            sprintf(send_buffer, "%s(%s) leaved the chatroom.", np->name, np->ip);
             leave_flag = 1;
         } else {
             printf("Fatal Error: -1\n");
@@ -118,7 +151,7 @@ int main()
 
     // Print Server IP
     getsockname(server_sockfd, (struct sockaddr*) &server_info, (socklen_t*) &s_addrlen);
-    printf("Start Server on: %s:%d\n", inet_ntoa(server_info.sin_addr), ntohs(server_info.sin_port));
+    printf("Started Server on: %s:%d\n", inet_ntoa(server_info.sin_addr), ntohs(server_info.sin_port));
 
     // Initial linked list for clients
     root = newNode(server_sockfd, inet_ntoa(server_info.sin_addr));
@@ -129,7 +162,7 @@ int main()
 
         // Print Client IP
         getpeername(client_sockfd, (struct sockaddr*) &client_info, (socklen_t*) &c_addrlen);
-        printf("Client %s:%d come in.\n", inet_ntoa(client_info.sin_addr), ntohs(client_info.sin_port));
+        printf("Client %s:%d came in.\n", inet_ntoa(client_info.sin_addr), ntohs(client_info.sin_port));
 
         // Append linked list for clients
         ClientList *c = newNode(client_sockfd, inet_ntoa(client_info.sin_addr));
